@@ -1,9 +1,13 @@
-# --- Chemins et configurations ---
-PATH_CCC = /home/bob/Desktop/OC_OUAZZANI_LENGLET/devProjet/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-gcc
-PI_IP = 192.168.1.64
-PI_USER = pi
-PI_PASS = raspberry
-PI_DIR = /home/pi/Desktop/TestModules/Test_complet
+ifneq ($(MAKECMDGOALS),clean)
+ifndef PATH_CCC
+$(error PATH_CCC is not set. Run 'source ../env.sh' or pass PATH_CCC=/path/to/arm-linux-gnueabihf-gcc)
+endif
+endif
+
+PI_IP ?= 192.168.1.64
+PI_USER ?= pi
+PI_PASS ?= raspberry
+PI_DIR ?= /home/pi/Desktop/TestModules/Test_complet
 
 # --- Règles principales ---
 
@@ -28,6 +32,7 @@ build-api:
 build-cross:
 	@echo "Cross-compilation locale..."
 	$(PATH_CCC) -c test_complet.c -o test_complet.o -I../7segments -I../buttons -I../Buzzer -I../MatriceLEDS -I../APIquestions -std=gnu99 -D'TARGET="PI"'
+	$(PATH_CCC) -c game_runtime.c -o game_runtime.o -I../7segments -I../buttons -I../Buzzer -I../MatriceLEDS -std=gnu99 -D'TARGET="PI"'
 	$(PATH_CCC) -c ../7segments/biblio_7segments.c -o biblio_7segments.o -I../7segments -std=gnu99 -D'TARGET="PI"'
 	$(PATH_CCC) -c ../buttons/biblio_buttons.c -o biblio_buttons.o -I../buttons -std=gnu99 -D'TARGET="PI"'
 	$(PATH_CCC) -c ../Buzzer/biblio_buzzer.c -o biblio_buzzer.o -I../Buzzer -std=gnu99 -D'TARGET="PI"'
@@ -37,9 +42,9 @@ build-cross:
 link-remote:
 	@echo "Transfert des fichiers objets..."
 	sshpass -p $(PI_PASS) ssh $(PI_USER)@$(PI_IP) "mkdir -p $(PI_DIR)"
-	sshpass -p $(PI_PASS) scp test_complet.o biblio_7segments.o biblio_buttons.o biblio_buzzer.o biblio_matriceLEDS.o $(PI_USER)@$(PI_IP):$(PI_DIR)/
+	sshpass -p $(PI_PASS) scp test_complet.o game_runtime.o biblio_7segments.o biblio_buttons.o biblio_buzzer.o biblio_matriceLEDS.o $(PI_USER)@$(PI_IP):$(PI_DIR)/
 	@echo "Linkage sur le Raspberry Pi..."
-	sshpass -p $(PI_PASS) ssh $(PI_USER)@$(PI_IP) "cd $(PI_DIR) && gcc test_complet.o biblio_7segments.o biblio_buttons.o biblio_buzzer.o biblio_matriceLEDS.o APIquestions.o -o test_complet -lwiringPi -lcurl -lcjson -lm"
+	sshpass -p $(PI_PASS) ssh $(PI_USER)@$(PI_IP) "cd $(PI_DIR) && gcc test_complet.o game_runtime.o biblio_7segments.o biblio_buttons.o biblio_buzzer.o biblio_matriceLEDS.o APIquestions.o -o test_complet -lwiringPi -lcurl -lcjson -lm -lrt"
 
 # --- Tests modulaires ---
 
@@ -77,9 +82,8 @@ test_matriceLEDS:
 
 # --- Nettoyage ---
 clean:
-	rm -f *.o test_7segments test_buttons test_buzzer test_matriceLEDS
+	rm -f *.o test_7segments test_buttons test_buzzer test_matriceLEDS test_complet
 	cd ../7segments && rm -f test_7segments *.o
 	cd ../buttons && rm -f test_buttons *.o
 	cd ../Buzzer && rm -f test_buzzer *.o
 	cd ../MatriceLEDS && rm -f test_matriceLEDS *.o
-
