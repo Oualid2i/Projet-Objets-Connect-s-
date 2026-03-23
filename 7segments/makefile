@@ -1,9 +1,11 @@
-# Chemins vers les outils compilateur ARM
-PATH_CC = /home/bob/Desktop/OC_OUAZZANI_LENGLET/devProjet/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-PATH_CCC = $(PATH_CC)/arm-linux-gnueabihf-gcc
+ifneq ($(MAKECMDGOALS),clean)
+ifndef PATH_CCC
+$(error PATH_CCC is not set. Run 'source ../env.sh' or pass PATH_CCC=/path/to/arm-linux-gnueabihf-gcc)
+endif
+endif
 
 # IP de ton Joy-Pi
-IPRPI ?= 192.168.176.213
+IPRPI ?= 10.40.11.168
 
 all: test_7segments
 

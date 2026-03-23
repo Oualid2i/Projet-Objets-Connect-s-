@@ -10,14 +10,22 @@ Le dossier `Test_complet/` contient la version solo du moteur de jeu sur une val
 
 ## Build
 - Exporter `PATH_CCC` avec `source ../env.sh`.
-- Compiler et deployer avec `make install-test-complet`.
+- Pour une nouvelle valisette, installer d'abord les dependances systeme avec `make PI_IP=IP_DE_LA_VALISETTE prepare-remote`.
+- Compiler localement avec `make build-cross`.
+- Deployer et linker sur la valisette avec `make PI_IP=IP_DE_LA_VALISETTE install-test-complet`.
 - Le linkage final de `APIquestions.c` se fait sur le Raspberry Pi, car cette partie depend de `libcurl` et `libcjson`.
+- La bibliotheque `libwiringPi.so` est fournie par le depot, copitee sur la valisette puis installee dans `/usr/local/lib` pendant `install-test-complet`.
+- Par defaut, le makefile utilise `pi` / `raspberry`.
+- Si vous utilisez un autre mot de passe SSH, vous pouvez ajouter `PI_PASS=...`.
+- Si vous utilisez deja une cle SSH, `sshpass` n'est pas necessaire.
 
 ## Cibles make utiles
 - `build-api`
 - `build-cross`
 - `link-remote`
+- `prepare-remote`
 - `install-test-complet`
+- `run-remote`
 - `clean`
 
 ## Notes

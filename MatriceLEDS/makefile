@@ -1,5 +1,8 @@
-PATH_CC = /home/bob/Desktop/OC_OUAZZANI_LENGLET/devProjet/tools-master/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
-PATH_CCC = $(PATH_CC)/arm-linux-gnueabihf-gcc
+ifneq ($(MAKECMDGOALS),clean)
+ifndef PATH_CCC
+$(error PATH_CCC is not set. Run 'source ../env.sh' or pass PATH_CCC=/path/to/arm-linux-gnueabihf-gcc)
+endif
+endif
 
 IPRPI ?= 192.168.176.213
 
