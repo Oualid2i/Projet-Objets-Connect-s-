@@ -1,34 +1,49 @@
-/*
- * Auteur : Bob LENGLET
- * Date : 15 Fev 2026
- * But : En-tête de la bibliothèque pour le contrôle du buzzer du Joy-Pi
+/**
+ * @file biblio_buzzer.h
+ * @brief API de contrôle du buzzer de la valisette.
  */
 
 #ifndef BIBLIO_BUZZER_H
 #define BIBLIO_BUZZER_H
 
-// Struct d'une note
+/**
+ * @brief Représente une note élémentaire.
+ */
 typedef struct {
-    int frequence; // Fréquence (Hz)
-    int duree;     // Durée de la note (ms)
+    int frequence; /**< Fréquence de la note en hertz. */
+    int duree;     /**< Durée de la note en millisecondes. */
 } Note;
 
-// Struct d'une mélodie entière
+/**
+ * @brief Représente une mélodie complète.
+ */
 typedef struct {
-    Note* notes;   // tableau de notes
-    int nb_notes;  // Nb notes dans la mélodie
+    Note* notes;   /**< Tableau des notes de la mélodie. */
+    int nb_notes;  /**< Nombre de notes dans le tableau. */
 } Melodie;
 
-// Initialise la communication avec la broche du buzzer
+/**
+ * @brief Initialise la communication avec la broche du buzzer.
+ */
 void init_buzzer(void);
 
-// Configure le pin du buzzer
+/**
+ * @brief Configure dynamiquement la broche du buzzer.
+ *
+ * @param[in] pin Numéro de la broche à utiliser.
+ */
 void set_buzzer_pin(int pin);
 
-// Fait sonner le buzzer de manière basique
+/**
+ * @brief Déclenche un bip de test simple.
+ */
 void bip_test(void);
 
-// Joue une mélodie passée en paramètre
+/**
+ * @brief Joue une mélodie passée en paramètre.
+ *
+ * @param[in] mel Mélodie à jouer.
+ */
 void jouer_melodie(Melodie mel);
 
 #endif

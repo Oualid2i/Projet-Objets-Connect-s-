@@ -1,16 +1,21 @@
-/*
- * Auteur : Bob LENGLET
- * Date : 15 Février 2026
- * But : Entete de la biblio des 4 boutons
+/**
+ * @file biblio_buttons.h
+ * @brief API de lecture des 4 boutons de la valisette.
  */
 #ifndef BIBLIO_BUTTONS_H
 #define BIBLIO_BUTTONS_H
 
-// Configure les broches des 4 boutons en entrée
+/**
+ * @brief Configure les broches des boutons en entrée.
+ */
 void init_buttons(void);
 
-// Scanne l'état des boutons et renvoie :
-// 'a' (haut), 'b' (droite), 'c' (bas), 'd' (gauche), ou 0 si rien n'est pressé
+/**
+ * @brief Lit l'état courant des boutons.
+ *
+ * @return `a` pour haut, `b` pour droite, `c` pour bas, `d` pour gauche,
+ *         ou `0` si aucun bouton n'est pressé.
+ */
 char lire_boutons(void);
 
 #endif

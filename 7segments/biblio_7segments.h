@@ -1,22 +1,34 @@
-/*
- * Auteur : Bob LENGLET
- * Date : 15 Février 2026
- * But : Entete de la bibliothèque de gestion de l'affichage 7 segments
+/**
+ * @file biblio_7segments.h
+ * @brief API de contrôle de l'afficheur 7 segments.
  */
 
 #ifndef BIBLIO_7SEGMENTS_H
 #define BIBLIO_7SEGMENTS_H
 
-// Initialise la communication I2C avec le contrôleur HT16K33 (adresse 0x70)
+/**
+ * @brief Initialise la communication I2C avec le contrôleur HT16K33.
+ */
 void init_7segments(void);
 
-// Affiche le temps au format MM:SS 
+/**
+ * @brief Affiche un chrono au format MM:SS.
+ *
+ * @param[in] minutes Valeur des minutes à afficher.
+ * @param[in] secondes Valeur des secondes à afficher.
+ */
 void afficher_chrono(int minutes, int secondes);
 
-// Règle la luminosité de l'afficheur de 0 à 15
+/**
+ * @brief Règle la luminosité de l'afficheur.
+ *
+ * @param[in] niveau Niveau de luminosité entre 0 et 15.
+ */
 void regler_luminosite(int niveau);
 
-// Éteint ts les segments de l'afficheur
+/**
+ * @brief Éteint tous les segments de l'afficheur.
+ */
 void effacer_7segments(void);
 
 #endif

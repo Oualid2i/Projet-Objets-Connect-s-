@@ -1,15 +1,10 @@
-/*
- * Auteur : Bob LENGLET
- * Date : 06 Mars 2026
- * But : Entete pour le test complet des modules du jeu QPC
+/**
+ * @file test_complet.h
+ * @brief En-tête principal du mode de test complet du jeu.
  */
 
 #ifndef TEST_COMPLET_H
 #define TEST_COMPLET_H
-
-// ==========================================
-//            INCLUDES
-// ==========================================
 
 #include <stdio.h>
 #include <stdlib.h>

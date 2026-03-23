@@ -1,23 +1,29 @@
-/*
- * Auteur : Bob LENGLET
- * Date : 03 Mars 2026
- * But : Entetes de la bibliothèque de gestion de la matrice de LEDs & prot SPI
+/**
+ * @file biblio_matriceLEDS.h
+ * @brief API de contrôle de la matrice de LEDs MAX7219.
  */
-
 
 #ifndef BIBLIO_MATRICELEDS_H
 #define BIBLIO_MATRICELEDS_H
 
-// Initialise la matrice MAX7219 via le bus SPI
+/**
+ * @brief Initialise la matrice via le bus SPI.
+ */
 void init_matrice(void);
 
-// Éteint toutes les LEDs
+/**
+ * @brief Éteint toutes les LEDs de la matrice.
+ */
 void clear_matrice(void);
 
-// Affiche une croix
+/**
+ * @brief Affiche une croix sur la matrice.
+ */
 void afficher_croix(void);
 
-// Affiche une coche
+/**
+ * @brief Affiche une coche sur la matrice.
+ */
 void afficher_coche(void);
 
 #endif
