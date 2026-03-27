@@ -23,11 +23,11 @@ struct MemoryStruct {
     size_t size;
 };
 
-static Question questions[QUESTION_COUNT];
-static int current_index = 0;
-static int is_initialized = 0;
+  Question questions[QUESTION_COUNT];
+  int current_index = 0;
+  int is_initialized = 0;
 
-static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) {
+  size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     struct MemoryStruct *mem = (struct MemoryStruct *)userp;
     
@@ -44,14 +44,14 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
     return realsize;
 }
 
-static char* url_decode(const char* str) {
+  char* url_decode(const char* str) {
     if (str == NULL) return NULL;
     int out_len = 0;
     char* decoded = curl_easy_unescape(NULL, str, 0, &out_len);
     return decoded;
 }
 
-static char* html_entity_decode(const char* str) {
+  char* html_entity_decode(const char* str) {
     if (str == NULL) return strdup("Unknown");
     
     size_t len = strlen(str);
@@ -116,7 +116,7 @@ static char* html_entity_decode(const char* str) {
     return decoded;
 }
 
-static char* strdup_json(cJSON *item) {
+  char* strdup_json(cJSON *item) {
     if (cJSON_IsString(item) && (item->valuestring != NULL)) {
         char* url_decoded = url_decode(item->valuestring);
         const char* to_decode = url_decoded ? url_decoded : item->valuestring;

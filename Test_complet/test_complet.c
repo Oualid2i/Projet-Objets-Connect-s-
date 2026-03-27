@@ -6,7 +6,7 @@
 
 #include "test_complet.h"
 
-static void convertir_question(const Question *source, DisplayedQuestion *dest) {
+  void convertir_question(const Question *source, DisplayedQuestion *dest) {
     game_build_question(dest,
                         source->difficulty,
                         source->question,

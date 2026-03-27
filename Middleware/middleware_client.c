@@ -21,7 +21,7 @@ typedef struct {
     GameRoundAnswer last_answer;
 } ClientSession;
 
-static int client_connect_socket(const char *host_ip, int host_port) {
+  int client_connect_socket(const char *host_ip, int host_port) {
     struct addrinfo hints;
     struct addrinfo *result = NULL;
     struct addrinfo *cursor;
@@ -55,7 +55,7 @@ static int client_connect_socket(const char *host_ip, int host_port) {
     return socket_fd;
 }
 
-static void client_fill_question(const ProtoQuestion *proto_question, DisplayedQuestion *question) {
+  void client_fill_question(const ProtoQuestion *proto_question, DisplayedQuestion *question) {
     char *answer_ptrs[GAME_MAX_ANSWERS];
     int i;
 

@@ -11,14 +11,14 @@
 #include "../MatriceLEDS/biblio_matriceLEDS.h"
 
 
-static long game_now_ms(void) {
+  long game_now_ms(void) {
     struct timespec ts;
 
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (ts.tv_sec * 1000L) + (ts.tv_nsec / 1000000L);
 }
 
-static void game_copy_text(char *dest, size_t dest_size, const char *src) {
+  void game_copy_text(char *dest, size_t dest_size, const char *src) {
     if (dest == NULL || dest_size == 0) {
         return;
     }
@@ -31,7 +31,7 @@ static void game_copy_text(char *dest, size_t dest_size, const char *src) {
     snprintf(dest, dest_size, "%s", src);
 }
 
-static Note notes_champion[] = {
+  Note notes_champion[] = {
     {523, 130}, {0, 20}, {523, 130}, {0, 20}, {523, 130}, {0, 20},
     {523, 130}, {0, 20}, {587, 130}, {0, 20}, {659, 130}, {0, 20},
     {523, 400}, {0, 100},
@@ -41,27 +41,27 @@ static Note notes_champion[] = {
     {784, 200}, {0, 50}, {659, 200}, {0, 50}, {1046, 600}
 };
 
-static Note notes_victoire[] = {
+  Note notes_victoire[] = {
     {523, 120}, {0, 30}, {659, 120}, {0, 30},
     {784, 120}, {0, 30}, {1046, 500}
 };
 
-static Note notes_echec[] = {
+  Note notes_echec[] = {
     {392, 300}, {0, 50}, {369, 300}, {0, 50},
     {349, 300}, {0, 50}, {329, 900}
 };
 
-static void jouer_generique(void) {
+  void jouer_generique(void) {
     Melodie melodie = {notes_champion, (int)(sizeof(notes_champion) / sizeof(Note))};
     jouer_melodie(melodie);
 }
 
-static void jouer_victoire(void) {
+  void jouer_victoire(void) {
     Melodie melodie = {notes_victoire, (int)(sizeof(notes_victoire) / sizeof(Note))};
     jouer_melodie(melodie);
 }
 
-static void jouer_echec(void) {
+  void jouer_echec(void) {
     Melodie melodie = {notes_echec, (int)(sizeof(notes_echec) / sizeof(Note))};
     jouer_melodie(melodie);
 }

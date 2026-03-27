@@ -12,7 +12,7 @@
 #define BUZZER_PIN 1
 
 // Variable globale pour le pin du buzzer (peut être modifiée avec set_buzzer_pin)
-static int buzzer_pin = BUZZER_PIN;
+  int buzzer_pin = BUZZER_PIN;
 
 void init_buzzer(void) {
     if (wiringPiSetup() == -1) {
@@ -37,7 +37,7 @@ void bip_test(void) {
 }
 
 // Fonction utilitaire (PWM manuel)
-static void jouer_frequence(int frequence, int duree_ms) {
+  void jouer_frequence(int frequence, int duree_ms) {
     long i;
     if (frequence <= 0) {
         delay(duree_ms); // freq 0 = Silence

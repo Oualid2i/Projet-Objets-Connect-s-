@@ -11,7 +11,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-static int sa_count_connected(const sa_ctx_t *ctx) {
+int sa_count_connected(const sa_ctx_t *ctx) {
     int i;
     int count = 0;
 
@@ -24,7 +24,7 @@ static int sa_count_connected(const sa_ctx_t *ctx) {
     return count;
 }
 
-static int sa_find_free_slot(const sa_ctx_t *ctx) {
+int sa_find_free_slot(const sa_ctx_t *ctx) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -36,7 +36,7 @@ static int sa_find_free_slot(const sa_ctx_t *ctx) {
     return -1;
 }
 
-static void sa_build_next_player_id(const sa_ctx_t *ctx, char *player_id, size_t player_id_size) {
+void sa_build_next_player_id(const sa_ctx_t *ctx, char *player_id, size_t player_id_size) {
     int number = 1;
 
     while (number <= MW_MAX_PLAYERS) {
@@ -63,7 +63,7 @@ static void sa_build_next_player_id(const sa_ctx_t *ctx, char *player_id, size_t
     player_id[0] = '\0';
 }
 
-static int sa_create_listen_socket(const char *ip, short port) {
+int sa_create_listen_socket(const char *ip, short port) {
     int listen_fd;
     int reuse = 1;
     struct sockaddr_in address;
@@ -103,7 +103,7 @@ static int sa_create_listen_socket(const char *ip, short port) {
     return listen_fd;
 }
 
-static void sa_close_client(client_conn_t *client) {
+void sa_close_client(client_conn_t *client) {
     if (client->used && client->socket_fd >= 0) {
         close(client->socket_fd);
     }
@@ -112,7 +112,7 @@ static void sa_close_client(client_conn_t *client) {
     client->socket_fd = -1;
 }
 
-static void sa_remove_lobby_client(sa_ctx_t *ctx, int index) {
+void sa_remove_lobby_client(sa_ctx_t *ctx, int index) {
     if (!ctx->clients[index].used) {
         return;
     }
@@ -122,7 +122,7 @@ static void sa_remove_lobby_client(sa_ctx_t *ctx, int index) {
     sa_close_client(&ctx->clients[index]);
 }
 
-static void sa_remove_game_client(sa_ctx_t *ctx, int index) {
+void sa_remove_game_client(sa_ctx_t *ctx, int index) {
     if (!ctx->clients[index].used) {
         return;
     }
@@ -132,7 +132,7 @@ static void sa_remove_game_client(sa_ctx_t *ctx, int index) {
     sa_close_client(&ctx->clients[index]);
 }
 
-static int sa_send_message_to_slot(sa_ctx_t *ctx, int slot, const char *message, int in_game) {
+int sa_send_message_to_slot(sa_ctx_t *ctx, int slot, const char *message, int in_game) {
     if (!ctx->clients[slot].used) {
         return -1;
     }
@@ -149,7 +149,7 @@ static int sa_send_message_to_slot(sa_ctx_t *ctx, int slot, const char *message,
     return 0;
 }
 
-static void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
+void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
     int client_fd;
@@ -210,7 +210,7 @@ static void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
     printf("[SA] %s connecte depuis %s.\n", player_id, inet_ntoa(client_addr.sin_addr));
 }
 
-static void sa_handle_lobby_clients(sa_ctx_t *ctx, fd_set *read_set) {
+void sa_handle_lobby_clients(sa_ctx_t *ctx, fd_set *read_set) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -228,7 +228,7 @@ static void sa_handle_lobby_clients(sa_ctx_t *ctx, fd_set *read_set) {
     }
 }
 
-static void sa_build_fdset(sa_ctx_t *ctx, fd_set *read_set, int *max_fd, int include_stdin) {
+void sa_build_fdset(sa_ctx_t *ctx, fd_set *read_set, int *max_fd, int include_stdin) {
     int i;
 
     FD_ZERO(read_set);
@@ -254,7 +254,7 @@ static void sa_build_fdset(sa_ctx_t *ctx, fd_set *read_set, int *max_fd, int inc
     }
 }
 
-static int sa_client_is_alive(const sa_ctx_t *ctx, int slot) {
+int sa_client_is_alive(const sa_ctx_t *ctx, int slot) {
     const PlayerState *player;
 
     if (!ctx->clients[slot].used) {
@@ -265,7 +265,7 @@ static int sa_client_is_alive(const sa_ctx_t *ctx, int slot) {
     return player != NULL && player->alive;
 }
 
-static void sa_record_round_participants(const sa_ctx_t *ctx, int participants[MW_MAX_PLAYERS]) {
+void sa_record_round_participants(const sa_ctx_t *ctx, int participants[MW_MAX_PLAYERS]) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -273,7 +273,7 @@ static void sa_record_round_participants(const sa_ctx_t *ctx, int participants[M
     }
 }
 
-static void sa_send_question(sa_ctx_t *ctx, const int participants[MW_MAX_PLAYERS], const char *message) {
+void sa_send_question(sa_ctx_t *ctx, const int participants[MW_MAX_PLAYERS], const char *message) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -283,7 +283,7 @@ static void sa_send_question(sa_ctx_t *ctx, const int participants[MW_MAX_PLAYER
     }
 }
 
-static void sa_send_round_results(sa_ctx_t *ctx, const int participants[MW_MAX_PLAYERS]) {
+void sa_send_round_results(sa_ctx_t *ctx, const int participants[MW_MAX_PLAYERS]) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -301,7 +301,7 @@ static void sa_send_round_results(sa_ctx_t *ctx, const int participants[MW_MAX_P
     }
 }
 
-static void sa_send_end_messages(sa_ctx_t *ctx) {
+void sa_send_end_messages(sa_ctx_t *ctx) {
     int i;
 
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
@@ -319,7 +319,7 @@ static void sa_send_end_messages(sa_ctx_t *ctx) {
     }
 }
 
-static void sa_handle_round_activity(sa_ctx_t *ctx, fd_set *read_set) {
+void sa_handle_round_activity(sa_ctx_t *ctx, fd_set *read_set) {
     int i;
 
     if (FD_ISSET(ctx->listen_fd, read_set)) {

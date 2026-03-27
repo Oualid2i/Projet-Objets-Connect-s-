@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static Question *game_current_question(const GameState *game) {
+  Question *game_current_question(const GameState *game) {
     if (game == NULL) {
         return NULL;
     }
@@ -16,7 +16,7 @@ static Question *game_current_question(const GameState *game) {
     return game->questions[game->current_question_index];
 }
 
-static int game_choice_is_valid(const Question *question, char response) {
+  int game_choice_is_valid(const Question *question, char response) {
     int max_choice;
 
     if (question == NULL) {

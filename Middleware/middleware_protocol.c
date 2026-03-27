@@ -9,7 +9,7 @@
 #include <unistd.h>
 
 
-static int proto_tokenize(char *copy, char *tokens[], int max_tokens) {
+  int proto_tokenize(char *copy, char *tokens[], int max_tokens) {
     int count = 0;
     char *saveptr = NULL;
     char *token = strtok_r(copy, "|", &saveptr);
@@ -22,7 +22,7 @@ static int proto_tokenize(char *copy, char *tokens[], int max_tokens) {
     return count;
 }
 
-static int proto_match_header(const char *msg, int code, const char *verb, char *copy, size_t copy_size, char *tokens[], int *token_count) {
+  int proto_match_header(const char *msg, int code, const char *verb, char *copy, size_t copy_size, char *tokens[], int *token_count) {
     *token_count = 0;
     proto_copy_text(copy, copy_size, msg);
     *token_count = proto_tokenize(copy, tokens, 16);
@@ -42,7 +42,7 @@ static int proto_match_header(const char *msg, int code, const char *verb, char 
     return 0;
 }
 
-static int proto_read_prefixed_value(const char *token, const char *prefix, char *dest, size_t dest_size) {
+  int proto_read_prefixed_value(const char *token, const char *prefix, char *dest, size_t dest_size) {
     size_t prefix_len = strlen(prefix);
 
     if (strncmp(token, prefix, prefix_len) != 0) {
@@ -53,7 +53,7 @@ static int proto_read_prefixed_value(const char *token, const char *prefix, char
     return 0;
 }
 
-static int proto_parse_int_value(const char *token, const char *prefix, int *value) {
+  int proto_parse_int_value(const char *token, const char *prefix, int *value) {
     size_t prefix_len = strlen(prefix);
 
     if (strncmp(token, prefix, prefix_len) != 0) {
@@ -64,7 +64,7 @@ static int proto_parse_int_value(const char *token, const char *prefix, int *val
     return 0;
 }
 
-static int proto_send_all(int fd, const char *buffer, size_t size) {
+  int proto_send_all(int fd, const char *buffer, size_t size) {
     size_t sent = 0;
 
     while (sent < size) {

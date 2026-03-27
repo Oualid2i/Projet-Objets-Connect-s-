@@ -13,7 +13,7 @@
 #define SPI_SPEED 500000
 
 // Dessin de la croix (1 = LED allumée)
-static const uint8_t image_croix[8] = {
+  const uint8_t image_croix[8] = {
     0x81, // 10000001
     0x42, // 01000010
     0x24, // 00100100
@@ -25,7 +25,7 @@ static const uint8_t image_croix[8] = {
 };
 
 // Dessin de la coche (V de validation)
-static const uint8_t image_coche[8] = {
+  const uint8_t image_coche[8] = {
     0x00, // 00000000
     0x01, // 00000001
     0x02, // 00000010
@@ -37,7 +37,7 @@ static const uint8_t image_coche[8] = {
 };
 
 // Fonction interne pour envoyer une commande au MAX7219
-static void write_max7219(uint8_t reg, uint8_t data) {
+  void write_max7219(uint8_t reg, uint8_t data) {
     uint8_t buffer[2];
     buffer[0] = reg;
     buffer[1] = data;
@@ -45,7 +45,7 @@ static void write_max7219(uint8_t reg, uint8_t data) {
 }
 
 // Fonction interne pour afficher un tableau de 8 octets
-static void dessiner_image(const uint8_t *image) {
+  void dessiner_image(const uint8_t *image) {
     for(int i = 0; i < 8; i++) {
         write_max7219(i + 1, image[i]);
     }
