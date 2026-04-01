@@ -14,6 +14,7 @@ int proto_tokenize(char *copy, char *tokens[], int max_tokens) {
     char *saveptr = NULL;
     char *token = strtok_r(copy, "|", &saveptr);
 
+    /* On decoupe la trame telle quelle, sans logique metier a ce niveau. */
     while (token != NULL && count < max_tokens) {
         tokens[count++] = token;
         token = strtok_r(NULL, "|", &saveptr);
@@ -67,6 +68,7 @@ int proto_parse_int_value(const char *token, const char *prefix, int *value) {
 int proto_send_all(int fd, const char *buffer, size_t size) {
     size_t sent = 0;
 
+    /* send() peut n'envoyer qu'un morceau, donc on boucle jusqu'a la fin. */
     while (sent < size) {
         ssize_t chunk = send(fd, buffer + sent, size - sent, 0);
         if (chunk <= 0) {
@@ -110,6 +112,7 @@ void proto_sanitize_text(char *dest, size_t dest_size, const char *src) {
         return;
     }
 
+    /* On remplace les caracteres qui casseraient facilement le protocole texte. */
     while (*src != '\0' && out + 1 < dest_size) {
         char current = *src++;
 
@@ -135,6 +138,7 @@ int proto_recv_cstr(int fd, char *buffer, size_t buffer_size) {
         return -1;
     }
 
+    /* Chaque message voyage comme une chaine C complete, terminee par '\0'. */
     while (1) {
         char current = '\0';
         ssize_t received = recv(fd, &current, 1, 0);
@@ -296,6 +300,7 @@ int proto_parse_question(const char *msg, ProtoQuestion *question) {
         return -1;
     }
 
+    /* Les champs peuvent arriver dans n'importe quel ordre tant que les prefixes sont bons. */
     for (i = 2; i < token_count; i++) {
         if (proto_parse_int_value(tokens[i], "round=", &question->round_id) == 0) {
             continue;
@@ -350,6 +355,7 @@ int proto_parse_result(const char *msg, ProtoResult *result) {
         return -1;
     }
 
+    /* Meme principe ici: on lit les champs par prefixe plutot que par position stricte. */
     for (i = 2; i < token_count; i++) {
         if (proto_parse_int_value(tokens[i], "round=", &result->round_id) == 0) {
             continue;

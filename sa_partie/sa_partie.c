@@ -39,6 +39,7 @@ int sa_find_free_slot(const sa_ctx_t *ctx) {
 void sa_build_next_player_id(const sa_ctx_t *ctx, char *player_id, size_t player_id_size) {
     int number = 1;
 
+    /* Les identifiants restent simples et stables: J1, J2, J3... */
     while (number <= MW_MAX_PLAYERS) {
         int used = 0;
         int i;
@@ -74,6 +75,7 @@ int sa_create_listen_socket(const char *ip, short port) {
         return -1;
     }
 
+    /* Pratique pour relancer vite le serveur pendant les tests. */
     setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
 
     memset(&address, 0, sizeof(address));
@@ -164,6 +166,7 @@ void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
         return;
     }
 
+    /* On exige un vrai JOIN des l'ouverture de la connexion. */
     if (proto_recv_cstr(client_fd, buffer, sizeof(buffer)) != 1 || proto_parse_join(buffer, &ready) != 0 || !ready) {
         proto_build_join_ko(response, sizeof(response), "bad_req");
         proto_send_cstr(client_fd, response);
@@ -171,6 +174,7 @@ void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
         return;
     }
 
+    /* Toute connexion tardive est refusee une fois la partie lancee. */
     if (!lobby_open) {
         proto_build_join_ko(response, sizeof(response), "partie_lancee");
         proto_send_cstr(client_fd, response);
@@ -178,6 +182,7 @@ void sa_accept_one(sa_ctx_t *ctx, int lobby_open) {
         return;
     }
 
+    /* On bloque les connexions supplementaires pour garder un lobby maitrise. */
     if (sa_count_connected(ctx) >= ctx->expected_players) {
         proto_build_join_ko(response, sizeof(response), "partie_pleine");
         proto_send_cstr(client_fd, response);
@@ -268,6 +273,7 @@ int sa_client_is_alive(const sa_ctx_t *ctx, int slot) {
 void sa_record_round_participants(const sa_ctx_t *ctx, int participants[MW_MAX_PLAYERS]) {
     int i;
 
+    /* On fige les participants de la manche avant les echanges reseau. */
     for (i = 0; i < MW_MAX_PLAYERS; i++) {
         participants[i] = sa_client_is_alive(ctx, i);
     }
@@ -342,6 +348,7 @@ void sa_handle_round_activity(sa_ctx_t *ctx, fd_set *read_set) {
             continue;
         }
 
+        /* Une reponse n'est acceptee que pour la manche en cours. */
         if (proto_parse_answer(buffer, &round_id, &choice) == 0 &&
             round_id == ctx->game->current_question_index + 1) {
             choice = (char)toupper((unsigned char)choice);
@@ -403,6 +410,7 @@ void sa_lobby(sa_ctx_t *ctx) {
 
         sa_handle_lobby_clients(ctx, &read_set);
 
+        /* Le lancement reste volontairement manuel pour garder la main pendant les demos. */
         if (FD_ISSET(STDIN_FILENO, &read_set)) {
             char line[64];
             (void)fgets(line, sizeof(line), stdin);
@@ -429,6 +437,7 @@ void sa_run_game(sa_ctx_t *ctx) {
         int participants[MW_MAX_PLAYERS];
         long deadline_ms;
 
+        /* L'hote prepare la question une seule fois, puis la diffuse a tous les survivants. */
         if (game_prepare_question_msg(ctx->game, question_msg, sizeof(question_msg)) < 0) {
             break;
         }
@@ -438,6 +447,7 @@ void sa_run_game(sa_ctx_t *ctx) {
 
         deadline_ms = proto_now_ms() + (long)MW_ROUND_DURATION_SECONDS * 1000L;
 
+        /* On attend jusqu'au timeout ou jusqu'a ce que tous les joueurs encore en vie aient repondu. */
         while (!game_all_alive_answered(ctx->game)) {
             fd_set read_set;
             int max_fd;
@@ -469,6 +479,7 @@ void sa_run_game(sa_ctx_t *ctx) {
             sa_handle_round_activity(ctx, &read_set);
         }
 
+        /* Une fois la fenetre de reponse fermee, le serveur arbitre la manche. */
         game_evaluate_round(ctx->game);
         sa_send_round_results(ctx, participants);
 

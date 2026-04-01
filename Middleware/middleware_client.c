@@ -37,6 +37,7 @@ typedef struct {
         return -1;
     }
 
+    /* On tente chaque adresse resolue jusqu'a ce qu'une connexion passe. */
     for (cursor = result; cursor != NULL; cursor = cursor->ai_next) {
         socket_fd = socket(cursor->ai_family, cursor->ai_socktype, cursor->ai_protocol);
         if (socket_fd < 0) {
@@ -59,6 +60,7 @@ typedef struct {
     char *answer_ptrs[GAME_MAX_ANSWERS];
     int i;
 
+    /* On convertit le format reseau vers le format d'affichage local. */
     for (i = 0; i < GAME_MAX_ANSWERS; i++) {
         answer_ptrs[i] = (char *)proto_question->answers[i];
     }
@@ -84,6 +86,7 @@ int client_run(const char *host_ip, int host_port) {
         return 1;
     }
 
+    /* Le client annonce simplement qu'il est pret a rejoindre la partie. */
     proto_build_join(buffer, sizeof(buffer));
     if (proto_send_cstr(session.socket_fd, buffer) != 0) {
         close(session.socket_fd);
@@ -128,6 +131,7 @@ int client_run(const char *host_ip, int host_port) {
                 continue;
             }
 
+            /* On garde la question en memoire pour pouvoir afficher ensuite le bon resultat. */
             client_fill_question(&proto_question, &session.current_question);
             session.last_answer.choice = '\0';
             session.last_answer.elapsed_ms = 0;
@@ -148,6 +152,7 @@ int client_run(const char *host_ip, int host_port) {
                     break;
                 }
             } else {
+                /* En cas de silence, c'est l'hote qui tranchera au timeout. */
                 printf("[CLIENT] Aucun appui valide, attente du resultat...\n");
             }
         } else if (code == PROTO_MSG_RESULTAT) {
@@ -158,6 +163,7 @@ int client_run(const char *host_ip, int host_port) {
                 continue;
             }
 
+            /* Le client affiche le verdict, mais la decision vient toujours du serveur. */
             session.current_question.correct_option = result.correct_option;
             est_correct = game_verifier_reponse(&session.current_question, session.last_answer.choice);
             game_afficher_resultat(est_correct, &session.current_question, session.last_answer.choice);

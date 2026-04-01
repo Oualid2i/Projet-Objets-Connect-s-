@@ -14,6 +14,7 @@
   long game_now_ms(void) {
     struct timespec ts;
 
+    /* Horloge monotone pour eviter les surprises si l'heure systeme change. */
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return (ts.tv_sec * 1000L) + (ts.tv_nsec / 1000000L);
 }
@@ -67,6 +68,7 @@
 }
 
 void game_init_hardware(void) {
+    /* On centralise toute l'init ici pour garder le reste du jeu lisible. */
     init_buttons();
     init_7segments();
     init_matrice();
@@ -92,6 +94,7 @@ void game_build_question(DisplayedQuestion *dest,
                          char correct_option) {
     int i;
 
+    /* Cette structure sert de format commun entre le solo et le client reseau. */
     memset(dest, 0, sizeof(*dest));
     game_copy_text(dest->difficulty, sizeof(dest->difficulty), difficulty);
     game_copy_text(dest->question, sizeof(dest->question), question);
@@ -143,6 +146,7 @@ GameRoundAnswer game_attendre_reponse_avec_timer(int duree_secondes, int answer_
         }
 
         if (remaining != last_displayed) {
+            /* On ne raffraichit l'affichage que quand la seconde change. */
             afficher_chrono(0, remaining);
             last_displayed = remaining;
 
@@ -154,6 +158,7 @@ GameRoundAnswer game_attendre_reponse_avec_timer(int duree_secondes, int answer_
             }
         }
 
+        /* Le timeout est gere localement pour garder une sensation de reactivite. */
         if (elapsed_ms >= (long)duree_secondes * 1000L) {
             printf("\nTEMPS ECOULE !\n");
             result.elapsed_ms = (long)duree_secondes * 1000L;
@@ -173,6 +178,7 @@ GameRoundAnswer game_attendre_reponse_avec_timer(int duree_secondes, int answer_
 
         index_reponse = reponse ? reponse - 'A' : -1;
         if (index_reponse >= 0 && index_reponse < answer_count) {
+            /* On garde le temps ecoule, utile ensuite pour l'analyse ou le debug. */
             result.choice = reponse;
             result.elapsed_ms = elapsed_ms;
             printf("\nReponse selectionnee: %c\n", reponse);
@@ -217,6 +223,7 @@ void game_afficher_resultat(int est_correct, const DisplayedQuestion *q, char re
     }
 
     printf("================================================\n\n");
+    /* Petite pause pour laisser le joueur voir le resultat avant de nettoyer. */
     delay(2000);
     clear_matrice();
 }

@@ -9,6 +9,7 @@
         return NULL;
     }
 
+    /* Garde-fou simple pour ne jamais dereferencer hors de la banque de questions. */
     if (game->current_question_index < 0 || game->current_question_index >= GAME_TOTAL_QUESTIONS) {
         return NULL;
     }
@@ -45,6 +46,7 @@ GameState *game_init(void) {
         return NULL;
     }
 
+    /* On charge tout au demarrage pour ne pas dependre de l'API en pleine partie. */
     for (i = 0; i < GAME_TOTAL_QUESTIONS; i++) {
         game->questions[i] = q_pull_question();
         if (game->questions[i] == NULL) {
@@ -78,6 +80,7 @@ int game_add_player(GameState *game, const char *player_id) {
         return -1;
     }
 
+    /* Les joueurs sont ajoutes dans l'ordre du lobby. */
     player = &game->players[game->player_count++];
     memset(player, 0, sizeof(*player));
     proto_copy_text(player->player_id, sizeof(player->player_id), player_id);
@@ -180,6 +183,7 @@ int game_prepare_question_msg(const GameState *game, char *buffer, size_t size) 
         return -1;
     }
 
+    /* On nettoie les textes avant de les injecter dans une trame delimitee par '|'. */
     proto_sanitize_text(difficulty, sizeof(difficulty), question->difficulty);
     proto_sanitize_text(statement, sizeof(statement), question->question);
 
@@ -219,6 +223,7 @@ int game_process_answer(GameState *game, const char *player_id, char response) {
         return -1;
     }
 
+    /* On ne garde que la premiere reponse d'un joueur pour une manche donnee. */
     if (player->answered) {
         return -1;
     }
@@ -244,6 +249,7 @@ int game_mark_disconnected(GameState *game, const char *player_id) {
         return 0;
     }
 
+    /* Une deconnexion est traitee comme un abandon propre de la manche. */
     player->alive = 0;
     player->answered = 1;
     player->last_answer = '\0';
@@ -280,6 +286,7 @@ int game_evaluate_round(GameState *game) {
         return -1;
     }
 
+    /* Toute la decision de la manche est centralisee ici, cote hote. */
     for (i = 0; i < game->player_count; i++) {
         PlayerState *player = &game->players[i];
         int is_correct;
@@ -380,6 +387,7 @@ int game_is_finished(const GameState *game) {
         return 1;
     }
 
+    /* En multi, un seul survivant suffit. En solo reseau, on continue tant que le joueur vit. */
     if (game->player_count > 1 && game->alive_count == 1) {
         return 1;
     }

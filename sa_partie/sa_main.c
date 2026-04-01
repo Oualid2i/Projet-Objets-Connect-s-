@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
     int expected_players;
     sa_ctx_t ctx;
 
+    /* Evite qu'un send() sur une socket fermee termine brutalement le serveur. */
     signal(SIGPIPE, SIG_IGN);
 
     if (argc != 4) {
@@ -25,6 +26,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    /* Le serveur passe d'abord par le lobby avant d'entrer dans la partie. */
     sa_lobby(&ctx);
     sa_run_game(&ctx);
     sa_shutdown(&ctx);
