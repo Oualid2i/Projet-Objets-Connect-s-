@@ -380,7 +380,6 @@ int game_is_finished(const GameState *game) {
         return 1;
     }
 
-    /* In solo mode, the last remaining player is the active player. */
     if (game->player_count > 1 && game->alive_count == 1) {
         return 1;
     }

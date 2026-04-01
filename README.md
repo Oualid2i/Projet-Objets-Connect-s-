@@ -1,6 +1,6 @@
 # Projet Objets Connectes
 
-Projet de quiz "Questions pour un Champion" pour valisette EnjoyPI / Raspberry Pi 3B.
+Projet de quiz "Questions pour un 2ien" pour valisette EnjoyPI / Raspberry Pi 3B.
 
 Le depot contient maintenant deux modes :
 - `Test_complet/` pour le jeu solo local avec les modules materiels.
